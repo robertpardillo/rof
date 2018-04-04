@@ -156,7 +156,7 @@ To resume all the features of the API a complete example will be explained.
 The goal of the example is setting up a parametrized cascade blade simulation, run it and parse the results on the outlet. 
 The parameters will be the inlet conditions and the geometry, airfoils with different geometry. 
 
-![patches](patches.png)
+![patches](readme_images/patches.png)
 
 ````python
 from Rof.case import Case
