@@ -1,0 +1,115 @@
+<?xml version="2.0" encoding="utf-8"?>
+<method>
+    <_system>
+        <fvSchemes>
+            <fluxScheme>Kurganov</fluxScheme>
+            <ddtSchemes dict="True">
+                <default>Euler</default>
+            </ddtSchemes>
+            <gradSchemes dict="True">
+                <default>Gauss linear</default>
+            </gradSchemes>
+            <divSchemes dict="True">
+                <default>none</default>
+                <div2 real="div(tauMC)">Gauss linear</div2>
+            </divSchemes>
+            <laplacianSchemes dict="True">
+                <default>Gauss linear corrected</default>
+            </laplacianSchemes>
+            <interpolationSchemes dict="True">
+                <default>linear</default>
+                <inter_1 real="reconstruct(rho)">vanLeer</inter_1>
+                <inter_2 real="reconstruct(U)">vanLeerV</inter_2>
+                <inter_3 real="reconstruct(T)">vanLeer</inter_3>
+            </interpolationSchemes>
+            <snGradSchemes dict="True">
+                <default>corrected</default>
+            </snGradSchemes>
+        </fvSchemes>
+        <fvSolution>
+            <solvers dict="True">
+                <rho dict="True" real='"(rho|rhoU|rhoE)"'>
+                    <solver>diagonal</solver>
+                </rho>
+                <U dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>GaussSeidel</smoother>
+                    <nSweeps>2</nSweeps>
+                    <tolerance>1e-09</tolerance>
+                    <relTol>0.01</relTol>
+                </U>
+                <h dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>GaussSeidel</smoother>
+                    <nSweeps>2</nSweeps>
+                    <tolerance>1e-10</tolerance>
+                    <relTol>0</relTol>
+                </h>
+            </solvers>
+        </fvSolution>
+        <controlDict>
+            <application>rhoCentralFoam</application>
+            <startFrom>startTime</startFrom>
+            <startTime>0</startTime>
+            <stopAt>endTime</stopAt>
+            <endTime>10</endTime>
+            <deltaT>0.0025</deltaT>
+            <writeControl>timeStep</writeControl>
+            <writeInterval>100</writeInterval>
+            <purgeWrite>0</purgeWrite>
+            <writeFormat>ascii</writeFormat>
+            <writePrecision>6</writePrecision>
+            <writeCompression>off</writeCompression>
+            <timeFormat>general</timeFormat>
+            <timePrecision>6</timePrecision>
+            <runTimeModifiable>true</runTimeModifiable>
+            <adjustTimeStep>yes</adjustTimeStep>
+            <maxCo>0.2</maxCo>
+            <maxDeltaT>1</maxDeltaT>
+        </controlDict>
+    </_system>
+    <_0>
+        <p>
+            <dimensions>[1 -1 -2 0 0 0 0]</dimensions>
+            <internalField>uniform 100000</internalField>
+        </p>
+        <T>
+            <dimensions>[0 0 0 1 0 0 0]</dimensions>
+            <internalField>uniform 300</internalField>
+        </T>
+        <U>
+            <dimensions>[0 1 -1 0 0 0 0]</dimensions>
+            <internalField>uniform (0 0 0)</internalField>
+        </U>
+    </_0>
+    <_constant>
+        <thermophysicalProperties>
+            <thermoType dict="True">
+                <type>hePsiThermo</type>
+                <mixture>pureMixture</mixture>
+                <transport>const</transport>
+                <thermo>hConst</thermo>
+                <equationOfState>perfectGas</equationOfState>
+                <specie>specie</specie>
+                <energy>sensibleEnthalpy</energy>
+            </thermoType>
+            <mixture dict="True">
+                <specie dict="True">
+                    <nMoles>1</nMoles>
+                    <molWeight>28.9</molWeight>
+                </specie>
+                <thermodynamics dict="True">
+                    <Cp>1004.5</Cp>
+                    <Hf>2.544e+06</Hf>
+                </thermodynamics>
+                <transport dict="True">
+                    <mu>1.8e-05</mu>
+                    <Pr>0.7</Pr>
+                </transport>
+            </mixture>
+        </thermophysicalProperties>
+        <turbulenceProperties>
+            <simulationType>laminar</simulationType>
+        </turbulenceProperties>
+    </_constant>
+</method>

@@ -1,0 +1,141 @@
+<?xml version="2.0" encoding="utf-8"?>
+<method>
+    <_system>
+        <controlDict>
+            <application>sonicFoam</application>
+            <startFrom>latestTime</startFrom>
+            <startTime>0</startTime>
+            <stopAt>endTime</stopAt>
+            <endTime>0.01</endTime>
+            <deltaT>4e-08</deltaT>
+            <writeControl>runTime</writeControl>
+            <writeInterval>2e-04</writeInterval>
+            <purgeWrite>0</purgeWrite>
+            <writeFormat>ascii</writeFormat>
+            <writePrecision>6</writePrecision>
+            <writeCompression>off</writeCompression>
+            <timeFormat>general</timeFormat>
+            <timePrecision>6</timePrecision>
+            <runTimeModifiable>true</runTimeModifiable>
+        </controlDict>
+        <fvSchemes>
+            <ddtSchemes dict="True">
+                <default>Euler</default>
+            </ddtSchemes>
+            <gradSchemes dict="True">
+                <default>Gauss linear</default>
+            </gradSchemes>
+            <divSchemes dict="True">
+                <default>none</default>
+                <div1 real="div(phi,U)">Gauss limitedLinearV 1</div1>
+                <div2 real="div(phi,e)">Gauss limitedLinear 1</div2>
+                <div3 real="div(phid,p)">Gauss limitedLinear 1</div3>
+                <div4 real="div(phi,K)">Gauss limitedLinear 1</div4>
+                <div5 real="div(phiv,p)">Gauss limitedLinear 1</div5>
+                <div6 real="div(phi,k)">Gauss upwind</div6>
+                <div7 real="div(phi,epsilon)">Gauss upwind</div7>
+                <div8 real="div(((rho*nuEff)*dev2(T(grad(U)))))">Gauss linear</div8>
+            </divSchemes>
+            <laplacianSchemes dict="True">
+                <default>Gauss linear limited corrected 0.5</default>
+            </laplacianSchemes>
+            <interpolationSchemes dict="True">
+                <default>linear</default>
+            </interpolationSchemes>
+            <snGradSchemes dict="True">
+                <default>corrected</default>
+            </snGradSchemes>
+        </fvSchemes>
+        <fvSolution>
+            <solvers dict="True">
+                <rho dict="True" real='"rho.*"'>
+                    <solver>diagonal</solver>
+                </rho>
+                <p dict="True" real='"p.*"'>
+                    <solver>PBiCG</solver>
+                    <preconditioner>DILU</preconditioner>
+                    <tolerance>1e-12</tolerance>
+                    <relTol>0</relTol>
+                </p>
+                <U_e dict="True" real='"(U|e).*"'>
+                    <p real="$p"> </p>
+                    <tolerance>1e-9</tolerance>
+                </U_e>
+                <k_epsilon dict="True" real='"(k|epsilon).*"'>
+                    <p real="$p"> </p>
+                    <tolerance>1e-10</tolerance>
+                </k_epsilon>
+            </solvers>
+            <PIMPLE dict="True">
+                <nOuterCorrectors>1</nOuterCorrectors>
+                <nCorrectors>2</nCorrectors>
+                <nNonOrthogonalCorrectors>0</nNonOrthogonalCorrectors>
+            </PIMPLE>
+        </fvSolution>
+    </_system>
+    <_0>
+        <alphat>
+            <dimensions>[1 -1 -1 0 0 0 0]</dimensions>
+            <internalField>uniform 0</internalField>
+        </alphat>
+        <epsilon>
+            <dimensions>[0 2 -3 0 0 0 0]</dimensions>
+            <internalField>uniform 25000</internalField>
+        </epsilon>
+        <k>
+            <dimensions>[0 2 -2 0 0 0 0]</dimensions>
+            <internalField>uniform 1000</internalField>
+        </k>
+        <nut>
+            <dimensions>[0 2 -1 0 0 0 0]</dimensions>
+            <internalField>uniform 0</internalField>
+        </nut>
+        <p>
+            <dimensions>[1 -1 -2 0 0 0 0]</dimensions>
+            <internalField>uniform 100000</internalField>
+        </p>
+        <T>
+            <dimensions>[0 0 0 1 0 0 0]</dimensions>
+            <internalField>uniform 300</internalField>
+        </T>
+        <U>
+            <dimensions>[0 1 -1 0 0 0 0]</dimensions>
+            <internalField>uniform 0</internalField>
+        </U>
+    </_0>
+    <_constant>
+        <thermophysicalProperties>
+            <thermoType dict="True">
+                <type>hePsiThermo</type>
+                <mixture>pureMixture</mixture>
+                <transport>const</transport>
+                <thermo>hConst</thermo>
+                <equationOfState>perfectGas</equationOfState>
+                <specie>specie</specie>
+                <energy>sensibleInternalEnergy</energy>
+            </thermoType>
+            <mixture dict="True">
+                <specie dict="True">
+                    <nMoles>1</nMoles>
+                    <molWeight>28.9</molWeight>
+                </specie>
+                <thermodynamics dict="True">
+                    <Cp>1005</Cp>
+                    <Hf>0</Hf>
+                </thermodynamics>
+                <transport dict="True">
+                    <mu>1.8e-05</mu>
+                    <Pr>0.7</Pr>
+                </transport>
+            </mixture>
+        </thermophysicalProperties>
+        <turbulenceProperties>
+            <simulationType>RAS</simulationType>
+            <RAS dict="True">
+                <RASModel>LaunderSharmaKE</RASModel>
+                <turbulence>on</turbulence>
+                <printCoeffs>on</printCoeffs>
+            </RAS>
+        </turbulenceProperties>
+    </_constant>
+</method>

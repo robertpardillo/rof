@@ -1,0 +1,176 @@
+<?xml version="2.0" encoding="utf-8"?>
+<method>
+    <_system>
+        <fvSchemes>
+            <ddtSchemes dict="True">
+                <default>steadyState</default>
+            </ddtSchemes>
+            <gradSchemes dict="True">
+                <default>Gauss linear</default>
+            </gradSchemes>
+            <divSchemes dict="True">
+                <default>none</default>
+                <div1 real="div(phi,U)">bounded Gauss upwind</div1>
+                <div2 real="div(((rho*nuEff)*dev2(T(grad(U)))))">Gauss linear</div2>
+                <div3 real="div(phi,e))">bounded Gauss upwind</div3>
+                <div4 real="div(phi,epsilon)">bounded Gauss upwind</div4>
+                <div5 real="div(phi,K)">bounded Gauss upwind</div5>
+                <div6 real="div(phi,k)">bounded Gauss upwind</div6>
+                <div7 real="div(phi,h)">bounded Gauss upwind</div7>
+                <div8 real="div(phi,Ekp)">bounded Gauss upwind</div8>
+            </divSchemes>
+            <laplacianSchemes dict="True">
+                <default>Gauss linear corrected</default>
+            </laplacianSchemes>
+            <interpolationSchemes dict="True">
+                <default>linear</default>
+            </interpolationSchemes>
+            <snGradSchemes dict="True">
+                <default>corrected</default>
+            </snGradSchemes>
+        </fvSchemes>
+        <fvSolution>
+            <solvers dict="True">
+                <p dict="True">
+                    <solver>GAMG</solver>
+                    <tolerance>1e-08</tolerance>
+                    <relTol>0.05</relTol>
+                    <smoother>GaussSeidel</smoother>
+                    <nCellsInCoarsestLevel>20</nCellsInCoarsestLevel>
+                </p>
+                <U dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>GaussSeidel</smoother>
+                    <nSweeps>2</nSweeps>
+                    <tolerance>1e-06</tolerance>
+                    <relTol>0.1</relTol>
+                </U>
+                <e dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>symGaussSeidel</smoother>
+                    <nSweeps>2</nSweeps>
+                    <tolerance>1e-06</tolerance>
+                    <relTol>0.1</relTol>
+                </e>
+                <h dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>symGaussSeidel</smoother>
+                    <nSweeps>2</nSweeps>
+                    <tolerance>1e-06</tolerance>
+                    <relTol>0.1</relTol>
+                </h>
+                <k_epsilon dict="True" real='"(k|epsilon)"'>
+                    <U real="$U">smoothSolver</U>
+                    <tolerance>1e-07</tolerance>
+                    <relTol>0.1</relTol>
+                </k_epsilon>
+            </solvers>
+            <SIMPLE dict="True">
+                <nNonOrthogonalCorrectors>0</nNonOrthogonalCorrectors>
+                <rhoMin>0.4</rhoMin>
+                <rhoMax>1.5</rhoMax>
+                <residualControl dict="True">
+                    <p>1e-2</p>
+                    <U>1e-4</U>
+                    <h>1e-3</h>
+                    <e>1e-3</e>
+                    <k_epsilon real='"(k|epsilon|omega)"'>1e-3</k_epsilon>
+                </residualControl>
+            </SIMPLE>
+            <relaxationFactors dict="True">
+                <fields dict="True">
+                    <p>0.3</p>
+                    <rho>0.05</rho>
+                </fields>
+                <equations dict="True">
+                    <U>0.7</U>
+                    <k_epsilon real='"(k|epsilon)"'>0.7</k_epsilon>
+                    <e>0.5</e>
+                    <h>0.4</h>
+                </equations>
+            </relaxationFactors>
+        </fvSolution>
+        <controlDict>
+            <application>rhoSimpleFoam</application>
+            <startFrom>latestTime</startFrom>
+            <startTime>0</startTime>
+            <stopAt>endTime</stopAt>
+            <endTime>1000</endTime>
+            <deltaT>1</deltaT>
+            <writeControl>timeStep</writeControl>
+            <writeInterval>10</writeInterval>
+            <purgeWrite>0</purgeWrite>
+            <writeFormat>ascii</writeFormat>
+            <writePrecision>6</writePrecision>
+            <writeCompression>off</writeCompression>
+            <timeFormat>general</timeFormat>
+            <timePrecision>6</timePrecision>
+            <runTimeModifiable>true</runTimeModifiable>
+        </controlDict>
+    </_system>
+    <_0>
+        <alphat>
+            <dimensions>[1 -1 -1 0 0 0 0]</dimensions>
+            <internalField>uniform 0</internalField>
+        </alphat>
+        <epsilon>
+            <dimensions>[0 2 -3 0 0 0 0]</dimensions>
+            <internalField>uniform 200</internalField>
+        </epsilon>
+        <k>
+            <dimensions>[0 2 -2 0 0 0 0]</dimensions>
+            <internalField>uniform 1</internalField>
+        </k>
+        <nut>
+            <dimensions>[0 2 -1 0 0 0 0]</dimensions>
+            <internalField>uniform 0</internalField>
+        </nut>
+        <p>
+            <dimensions>[1 -1 -2 0 0 0 0]</dimensions>
+            <internalField>uniform 100000</internalField>
+        </p>
+        <T>
+            <dimensions>[0 0 0 1 0 0 0]</dimensions>
+            <internalField>uniform 300</internalField>
+        </T>
+        <U>
+            <dimensions>[0 1 -1 0 0 0 0]</dimensions>
+            <internalField>uniform (0 0 0)</internalField>
+        </U>
+    </_0>
+    <_constant>
+        <thermophysicalProperties>
+            <thermoType dict="True">
+                <type>hePsiThermo</type>
+                <mixture>pureMixture</mixture>
+                <transport>const</transport>
+                <thermo>hConst</thermo>
+                <equationOfState>perfectGas</equationOfState>
+                <specie>specie</specie>
+                <energy>sensibleEnthalpy</energy>
+            </thermoType>
+            <mixture dict="True">
+                <specie dict="True">
+                    <nMoles>1</nMoles>
+                    <molWeight>28.9</molWeight>
+                </specie>
+                <thermodynamics dict="True">
+                    <Cp>1004.5</Cp>
+                    <Hf>2.544e+06</Hf>
+                </thermodynamics>
+                <transport dict="True">
+                    <mu>1.8e-05</mu>
+                    <Pr>0.7</Pr>
+                </transport>
+            </mixture>
+        </thermophysicalProperties>
+        <turbulenceProperties>
+            <simulationType>RAS</simulationType>
+            <RAS dict="True">
+                <RASModel>kEpsilon</RASModel>
+                <turbulence>on</turbulence>
+                <printCoeffs>on</printCoeffs>
+            </RAS>
+        </turbulenceProperties>
+    </_constant>
+</method>

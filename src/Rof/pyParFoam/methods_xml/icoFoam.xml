@@ -1,0 +1,84 @@
+<?xml version="2.0" encoding="utf-8"?>
+<method>
+    <_system>
+        <fvSchemes>
+            <ddtSchemes dict="True">
+                <default>Euler</default>
+            </ddtSchemes>
+            <gradSchemes dict="True">
+                <default>Gauss linear</default>
+                <gradP real="grad(p)">Gauss linear</gradP>
+            </gradSchemes>
+            <divSchemes dict="True">
+                <default>none</default>
+                <dic_phi real="div(phi,U)">Gauss linear</dic_phi>
+            </divSchemes>
+            <laplacianSchemes dict="True">
+                <default>Gauss linear orthogonal</default>
+            </laplacianSchemes>
+            <interpolationSchemes dict="True">
+                <default>linear</default>
+            </interpolationSchemes>
+            <snGradSchemes dict="True">
+                <default>orthogonal</default>
+            </snGradSchemes>
+        </fvSchemes>
+        <fvSolution>
+            <solvers dict="True">
+                <p dict="True">
+                    <solver>PCG</solver>
+                    <preconditioner>PCG</preconditioner>
+                    <tolerance>1e-06</tolerance>
+                    <relTol>0.1</relTol>
+                </p>
+                <pFinal dict="True">
+                    <p real="$p"> </p>
+                    <relTol>0</relTol>
+                </pFinal>
+                <U dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>symGaussSeidel</smoother>
+                    <tolerance>1e-05</tolerance>
+                    <relTol>0</relTol>
+                </U>
+            </solvers>
+            <PISO dict="True">
+                <nCorrectors>2</nCorrectors>
+                <nNonOrthogonalCorrectors>0</nNonOrthogonalCorrectors>
+                <pRefCell>0</pRefCell>
+                <pRefValue>0</pRefValue>
+            </PISO>
+        </fvSolution>
+        <controlDict>
+            <startFrom>latestTime</startFrom>
+            <startTime>0</startTime>
+            <stopAt>endTime</stopAt>
+            <endTime>1000</endTime>
+            <deltaT>1</deltaT>
+            <writeControl>timeStep</writeControl>
+            <writeInterval>10</writeInterval>
+            <purgeWrite>0</purgeWrite>
+            <writeFormat>ascii</writeFormat>
+            <writePrecision>6</writePrecision>
+            <writeCompression>off</writeCompression>
+            <timeFormat>general</timeFormat>
+            <timePrecision>6</timePrecision>
+            <runTimeModifiable>true</runTimeModifiable>
+        </controlDict>
+    </_system>
+    <_0>
+        <U dict="True">
+            <dimensions>[0 1 -1 0 0 0 0]</dimensions>
+            <internalField>uniform (0 0 0)</internalField>
+        </U>
+        <p dict="True">
+            <dimensions>[0 2 -2 0 0 0 0]</dimensions>
+            <internalField>uniform 0</internalField>
+        </p>
+    </_0>
+    <_constant>
+        <transportProperties>
+            <nu>[0 2 -1 0 0 0 0] 0.01</nu>
+        </transportProperties>
+    </_constant>
+</method>

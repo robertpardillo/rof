@@ -1,0 +1,124 @@
+<?xml version="2.0" encoding="utf-8"?>
+<method>
+    <_system>
+        <fvSchemes>
+            <ddtSchemes dict="True">
+                <default>steadyState</default>
+            </ddtSchemes>
+            <gradSchemes dict="True">
+                <default>Gauss linear</default>
+            </gradSchemes>
+            <divSchemes dict="True">
+                <default>none</default>
+                <div1 real="div(phi,U)">bounded Gauss linearUpwind grad(nuTilda)</div1>
+                <div2 real="div(phi,nuTilda)">bounded Gauss linearUpwind grad(nuTilda)</div2>
+                <div3 real="div((nuEff*dev2(T(grad(U)))))">Gauss linear</div3>
+            </divSchemes>
+            <laplacianSchemes dict="True">
+                <default>Gauss linear corrected</default>
+            </laplacianSchemes>
+            <interpolationSchemes dict="True">
+                <default>linear</default>
+            </interpolationSchemes>
+            <snGradSchemes dict="True">
+                <default>corrected</default>
+            </snGradSchemes>
+            <wallDist dict="True">
+                <method>meshWave</method>
+            </wallDist>
+        </fvSchemes>
+        <fvSolution>
+            <solvers dict="True">
+                <p dict="True">
+                    <solver>GAMG</solver>
+                    <tolerance>1e-06</tolerance>
+                    <relTol>0.1</relTol>
+                    <smoother>GaussSeidel</smoother>
+                </p>
+                <U dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>GaussSeidel</smoother>
+                    <nSweeps>2</nSweeps>
+                    <tolerance>1e-08</tolerance>
+                    <relTol>0.1</relTol>
+                </U>
+                <nuTilda dict="True">
+                    <solver>smoothSolver</solver>
+                    <smoother>GaussSeidel</smoother>
+                    <nSweeps>2</nSweeps>
+                    <tolerance>1e-08</tolerance>
+                    <relTol>0.1</relTol>
+                </nuTilda>
+            </solvers>
+            <SIMPLE dict="True">
+                <nNonOrthogonalCorrectors>0</nNonOrthogonalCorrectors>
+                <pRefCell>0</pRefCell>
+                <pRefValue>0</pRefValue>
+                <residualControl dict="True">
+                    <p>1e-5</p>
+                    <U>1e-5</U>
+                    <nuTilda>1e-5</nuTilda>
+                </residualControl>
+            </SIMPLE>
+            <relaxationFactors dict="True">
+                <fields dict="True">
+                    <p>0.3</p>
+                </fields>
+                <equations dict="True">
+                    <U>0.7</U>
+                    <nuTilda>0.7</nuTilda>
+                </equations>
+            </relaxationFactors>
+        </fvSolution>
+        <controlDict>
+            <application>simpleFoam</application>
+            <startFrom>latestTime</startFrom>
+            <startTime>0</startTime>
+            <stopAt>endTime</stopAt>
+            <endTime>1000</endTime>
+            <deltaT>1</deltaT>
+            <writeControl>timeStep</writeControl>
+            <writeInterval>10</writeInterval>
+            <purgeWrite>0</purgeWrite>
+            <writeFormat>ascii</writeFormat>
+            <writePrecision>6</writePrecision>
+            <writeCompression>off</writeCompression>
+            <timeFormat>general</timeFormat>
+            <timePrecision>6</timePrecision>
+            <runTimeModifiable>true</runTimeModifiable>
+        </controlDict>
+    </_system>
+    <_0>
+        <U>
+            <dimensions>[0 1 -1 0 0 0 0]</dimensions>
+            <internalField>uniform (0 0 0)</internalField>
+        </U>
+        <p>
+            <dimensions>[0 2 -2 0 0 0 0]</dimensions>
+            <internalField>uniform 0</internalField>
+        </p>
+        <nuTilda>
+            <dimensions>[0 2 -1 0 0 0 0]</dimensions>
+            <internalField>uniform 0.14</internalField>
+        </nuTilda>
+        <nut>
+            <dimensions>[0 2 -1 0 0 0 0]</dimensions>
+            <internalField>uniform 0.14</internalField>
+        </nut>
+    </_0>
+    <_constant>
+        <transportProperties>
+            <transportModel>Newtonian</transportModel>
+            <rho>[1 -3 0 0 0 0 0] 1</rho>
+            <nu>[0 2 -1 0 0 0 0] 1e-05</nu>
+        </transportProperties>
+        <turbulenceProperties>
+            <simulationType>RAS</simulationType>
+            <RAS dict="True">
+                <RASModel>SpalartAllmaras</RASModel>
+                <turbulence>on</turbulence>
+                <printCoeffs>on</printCoeffs>
+            </RAS>
+        </turbulenceProperties>
+    </_constant>
+</method>
